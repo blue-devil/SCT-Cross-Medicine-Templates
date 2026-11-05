@@ -12,6 +12,19 @@
 #include "sct_textbox.h"
 #include "xmplayer.h"
 
+#ifdef _WIN32
+/* PE/COFF: a plain section attribute lands in .comment without warnings */
+__attribute__((used, section(".comment")))
+static const char sct_build_tag[] =
+    "Freedom does not come from second-hand thoughts. Blue DeviL // SCT";
+#else
+/* ELF: match the assembler's own .comment section attributes exactly,
+ * a C section attribute conflicts with them (incorrect attributes warn) */
+__asm__(".pushsection .comment,\"\",@progbits\n\t"
+    ".asciz \"Freedom does not come from second-hand thoughts. Blue DeviL // SCT\"\n\t"
+    ".popsection\n");
+#endif
+
 #define WIN_W 508
 #define WIN_H 540
 
